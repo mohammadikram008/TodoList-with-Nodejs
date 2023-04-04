@@ -1,0 +1,15 @@
+.nav-item{
+    display: flex;
+    list-style: none;
+    justify-content: space-between;
+    background-color: bisque;
+    border-radius: 10px;
+    width: 100%;
+    height: 10%;
+    align-items: center;
+  }
+  .nav-list{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }

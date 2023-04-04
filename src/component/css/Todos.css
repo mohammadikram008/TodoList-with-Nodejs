@@ -1,0 +1,42 @@
+.container {
+    display: flex;
+    gap: 50px;
+    justify-content: center;
+    /* align-items: center; */
+  }
+  
+  #posts {
+    width: 400px;
+  }
+  
+  i {
+    cursor: pointer;
+  }
+  #posts div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .options {
+    display: flex;
+    gap: 25px;
+  }
+  
+  #msg {
+    color: red;
+  }
+  .todo-card{
+    width: 90%;
+    height: 40%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .right{
+    height: 40%;
+  }
+  .input-form{
+  
+  }
