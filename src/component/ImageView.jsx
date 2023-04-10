@@ -10,6 +10,7 @@ import {
   CardSubtitle,
   Button,
 } from "reactstrap";
+import Navbar from "./Navbar";
 const ImageView = () => {
   const [file, setFile] = useState();
   function handleChangeimage(e) {
@@ -18,6 +19,7 @@ const ImageView = () => {
   }
   return (
     <Fragment>
+      <Navbar />
       <div className="main-imageview">
         <input type="file" onChange={handleChangeimage} />
         <div className="img">
@@ -44,50 +46,12 @@ const ImageView = () => {
               </CardBody>
             </Card>
           </div>
+
           <div>
-            <Card className="my-2">
-              <CardBody>
-                <CardTitle tag="h5">Card Title</CardTitle>
-                <CardText>
-                  This is a wider card with supporting text below as a natural
-                  lead-in to additional content. This content is a little bit
-                  longer.
-                </CardText>
-                <CardText>
-                  <small className="text-muted">Last updated 3 mins ago</small>
-                </CardText>
-              </CardBody>
-              <CardImg
-                bottom
-                src={file}
-                style={{
-                  height: 180,
-                }}
-                width="100%"
-              />
-            </Card>
+            <img src={file} className="circle-image" />
           </div>
           <div>
-            <Card inverse>
-              <CardImg
-                src={file}
-                style={{
-                  height: 270,
-                }}
-                width="100%"
-              />
-              <CardImgOverlay>
-                <CardTitle tag="h5">Card Title</CardTitle>
-                <CardText>
-                  This is a wider card with supporting text below as a natural
-                  lead-in to additional content. This content is a little bit
-                  longer.
-                </CardText>
-                <CardText>
-                  <small className="text-muted">Last updated 3 mins ago</small>
-                </CardText>
-              </CardImgOverlay>
-            </Card>
+            <img src={file} className="reactangle-image" />
           </div>
         </div>
       </div>

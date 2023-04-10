@@ -1,16 +1,19 @@
 import React, { Fragment, useState, useEffect } from "react";
-import Tasks from "../Task";
-import { Checkbox, Button } from "@mui/material";
-import { Col, Input, Row, Table } from "reactstrap";
+import { Button } from "@mui/material";
+import { Col, Input, Label, Row, Table } from "reactstrap";
 import Paper from "@mui/material/Paper";
+import Snackbar from "../component/snackbar";
 import TextField from "@mui/material/TextField";
-import PerfectScrollbar from "react-perfect-scrollbar";
+import ReactPaginate from "react-paginate";
+
 import {
   addTask,
   getTasks,
   updateTask,
   deleteTask,
 } from "../services/TaskServices";
+import "./css/Todos.css";
+import SkeletonComponent from "./SkeletonComponent";
 // class TodoListForm extends Tasks {
 //   state = { tasks: [], currentTask: "" };
 //   render() {
@@ -73,31 +76,34 @@ import {
 const TodoListForm = () => {
   const [tasks, setTasks] = useState([]),
     [id, setId] = useState(""),
+    [message, setMessage] = useState({}),
+    [open, setOpen] = useState(false),
     [searchValue, setSearchValue] = useState(""),
     [searchAssignee, setSearchAssigne] = useState(""),
     [name, setName] = useState(""),
     [date, setDate] = useState(""),
     [time, setTime] = useState(""),
+    [Duedate, setDueDate] = useState(""),
+    [Duetime, setDueTime] = useState(""),
     [assigne, setAssigne] = useState("");
-
+  ///pagination
+  const [pageCount, setPageCount] = useState(0);
+  const [imagesOffset, setImagesOffset] = useState(0);
+  const [currentImages, setCurrentImages] = useState(null);
+  useEffect(() => {
+    const endOffset = imagesOffset + 2;
+    setCurrentImages(tasks.slice(imagesOffset, endOffset));
+    setPageCount(Math.ceil(tasks.length / 2));
+  }, [tasks, imagesOffset]);
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * 2) % tasks.length;
+    setImagesOffset(newOffset);
+  };
+  //getAlldata
   async function getdata() {
     const data = await getTasks();
     setTasks(data.data);
   }
-  useEffect(() => {
-    const newName = tasks.filter((value) =>
-      value.name.toLowerCase().includes(searchValue.toLowerCase())
-    );
-    setTasks(newName);
-    console.log("after search", searchValue);
-  }, [searchValue]);
-  useEffect(() => {
-    const newAssigne = tasks.filter((value) =>
-      value.assignee.toLowerCase().includes(searchAssignee.toLowerCase())
-    );
-    setTasks(newAssigne);
-    console.log("after search", searchAssignee);
-  }, [searchAssignee]);
   useEffect(() => {
     try {
       const data = getdata();
@@ -107,9 +113,9 @@ const TodoListForm = () => {
   }, []);
   console.log("TASk", tasks);
 
+  //submit Data to database
   const handleSubmit = async (e) => {
       e.preventDefault();
-
       const originalTasks = tasks;
       try {
         if (id) {
@@ -119,6 +125,8 @@ const TodoListForm = () => {
             assignee: assigne,
             date: date,
             time: time,
+            duedate: Duedate,
+            duetime: Duetime,
           });
           const tasks = originalTasks;
           tasks.push(data);
@@ -127,14 +135,21 @@ const TodoListForm = () => {
           setAssigne("");
           setDate("");
           setTime("");
+          setDueDate("");
+          setDueTime("");
           setId("");
+          setOpen(true);
+          setMessage({ text: "Updated successfully ", type: "success" });
         } else {
           const { data } = await addTask({
             name: name,
             assignee: assigne,
             date: date,
             time: time,
+            duedate: Duedate,
+            duetime: Duetime,
           });
+          //   console.log;
           const tasks = originalTasks;
           tasks.push(data);
           setName("");
@@ -142,11 +157,18 @@ const TodoListForm = () => {
           setAssigne("");
           setDate("");
           setTime("");
+          setDueDate("");
+          setDueTime("");
+          setOpen(true);
+          setMessage({ text: "Save successfully ", type: "success" });
         }
       } catch (error) {
         console.log(error);
+        setOpen(true);
+        setMessage({ text: "Error", error });
       }
     },
+    ///update data in database
     handleUpdate = async (currentTask) => {
       const originalTasks = tasks;
       try {
@@ -158,6 +180,8 @@ const TodoListForm = () => {
         setAssigne(tasks[index].assignee);
         setDate(tasks[index].date);
         setTime(tasks[index].time);
+        setDueDate(tasks[index].duedate);
+        setDueTime(tasks[index].dueTime);
         setId(tasks[index]._id);
         // tasks[index].completed = !tasks[index].completed;
         setTasks(tasks);
@@ -169,6 +193,7 @@ const TodoListForm = () => {
         console.log(error);
       }
     },
+    ///delete data from database
     handleDelete = async (currentTask) => {
       const originalTasks = tasks;
       try {
@@ -180,21 +205,68 @@ const TodoListForm = () => {
         console.log(error);
       }
     },
+    //set State
     handleChangeDate = (e) => {
       setDate(e.target.value);
     },
     handleChangeTime = (e) => {
       setTime(e.target.value);
     },
+    handleChangeDueDate = (e) => {
+      setDueDate(e.target.value);
+    },
+    handleChangeDueTime = (e) => {
+      setDueTime(e.target.value);
+    },
     handleChangeName = (e) => {
       setName(e.target.value);
     },
     handleChangeAssignee = (e) => {
       setAssigne(e.target.value);
+    },
+    ///searchByName
+    handleSearchByName = async (e) => {
+      let key = searchValue;
+      setSearchAssigne("");
+      //   setSearchValue(key);
+      if (key) {
+        let result = await fetch(
+          `http://localhost:8080/api/tasks/search/${key}`
+        );
+        result = await result.json();
+        console.log("result:", result);
+        if (result) {
+          setTasks(result);
+          //   setSearchValue(key);
+        }
+      } else {
+        setSearchValue("");
+        getdata();
+      }
+    },
+    ///SearchByAssinge
+    handleSearchByAssignee = async (e) => {
+      //   let key = e.target.value;
+      let key = searchAssignee;
+      setSearchValue("");
+      //   setSearchAssigne(key);
+      if (key) {
+        let result = await fetch(
+          `http://localhost:8080/api/tasks/search/${key}`
+        );
+        result = await result.json();
+        console.log("result:", result);
+        if (result) {
+          setTasks(result);
+        }
+      } else {
+        setSearchAssigne("");
+        getdata();
+      }
     };
   return (
     <Fragment>
-      <Row>
+      <Row className="m-0">
         <Col md={12}>
           <div className="App ">
             <Paper elevation={3} className="container">
@@ -204,10 +276,17 @@ const TodoListForm = () => {
                   type="search"
                   size="small"
                   style={{ width: "20%" }}
-                  onChange={(e) => setSearchValue(e.target.value)}
                   value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
                   placeholder="Search by name"
                 />
+                <Button
+                  variant="outlined"
+                  className="searchbtn"
+                  onClick={handleSearchByName}
+                >
+                  searchbyName
+                </Button>
                 <Input
                   type="search"
                   size="small"
@@ -216,6 +295,13 @@ const TodoListForm = () => {
                   value={searchAssignee}
                   placeholder="Search by Assignee"
                 />
+                <Button
+                  variant="outlined"
+                  className="searchbtn"
+                  onClick={handleSearchByAssignee}
+                >
+                  searchbyAssignee
+                </Button>
               </div>
               <form
                 onSubmit={handleSubmit}
@@ -242,17 +328,33 @@ const TodoListForm = () => {
                   onChange={handleChangeAssignee}
                   placeholder="Enter Assignee"
                 />
+                <Label>StartDate</Label>
                 <Input
                   type="date"
-                  className="mt-3"
+                  className=""
                   value={date}
                   onChange={handleChangeDate}
                 />
+                <Label>StartTime</Label>
                 <Input
                   type="time"
-                  className="mt-3"
+                  className=""
                   value={time}
                   onChange={handleChangeTime}
+                />
+                <Label>DueDate</Label>
+                <Input
+                  type="date"
+                  className=""
+                  value={Duedate}
+                  onChange={handleChangeDueDate}
+                />
+                <Label>DueTime</Label>
+                <Input
+                  type="time"
+                  className=""
+                  value={Duetime}
+                  onChange={handleChangeDueTime}
                 />
                 <Button
                   style={{ height: "40px" }}
@@ -264,51 +366,82 @@ const TodoListForm = () => {
                   Add task
                 </Button>
               </form>
-              <div>
-                <Table style={{ border: "1" }}>
-                  <thead>
-                    <tr style={{ padding: "0 1rem" }}>
-                      <th>Name</th>
-                      <th>Assignee</th>
-                      <th>Date</th>
-                      <th>Time</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tasks.length > 0 ? (
-                      tasks.map((tasks) => (
-                        <tr key={tasks._id}>
-                          <td>{tasks.name}</td>
-                          <td>{tasks.assignee}</td>
-                          <td>{tasks.date}</td>
-                          <td>{tasks.time}</td>
-
-                          <td>
-                            <span className="options">
-                              <i
-                                className="fas fa-edit"
-                                onClick={() => handleUpdate(tasks._id)}
-                              ></i>
-                              <i
-                                className=" fas fa-trash-alt"
-                                onClick={() => handleDelete(tasks._id)}
-                              ></i>
-                            </span>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={3}>No Task is here</td>
+              {tasks ? (
+                <div>
+                  <Table style={{ border: "1" }}>
+                    <thead>
+                      <tr style={{ padding: "0 1rem" }}>
+                        <th>Name</th>
+                        <th>Assignee</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>DueDate</th>
+                        <th>DueTime</th>
                       </tr>
-                    )}
-                  </tbody>
-                </Table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {tasks.length > 0 ? (
+                        currentImages.map((tasks) => (
+                          <tr key={tasks._id}>
+                            <td>{tasks.name}</td>
+                            <td>{tasks.assignee}</td>
+                            <td>{tasks.date}</td>
+                            <td>{tasks.time}</td>
+                            <td>{tasks.duedate}</td>
+                            <td>{tasks.duetime}</td>
+
+                            <td>
+                              <span className="options ">
+                                <i
+                                  className="fas fa-edit"
+                                  onClick={() => handleUpdate(tasks._id)}
+                                ></i>
+                                <i
+                                  className=" fas fa-trash-alt del"
+                                  onClick={() => handleDelete(tasks._id)}
+                                ></i>
+                              </span>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <SkeletonComponent />
+                          {/* <td colSpan={3}>No Task is here</td> */}
+                        </tr>
+                      )}
+                      {tasks.length > 1 && (
+                        <ReactPaginate
+                          breakLabel="..."
+                          nextLabel="next >"
+                          onPageChange={handlePageClick}
+                          pageRangeDisplayed={2}
+                          pageCount={pageCount}
+                          previousLabel="< previous"
+                          renderOnZeroPageCount={null}
+                          breakClassName={"page-item"}
+                          breakLinkClassName={"page-link"}
+                          containerClassName={"pagination"}
+                          pageClassName={"page-item"}
+                          pageLinkClassName={"page-link"}
+                          previousClassName={"page-item"}
+                          previousLinkClassName={"page-link"}
+                          nextClassName={"page-item"}
+                          nextLinkClassName={"page-link"}
+                          activeClassName={"active"}
+                        />
+                      )}
+                    </tbody>
+                  </Table>
+                </div>
+              ) : (
+                <SkeletonComponent />
+              )}
             </Paper>
           </div>
         </Col>
       </Row>
+      <Snackbar open={open} message={message} setOpen={setOpen} />
     </Fragment>
   );
 };

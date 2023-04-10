@@ -16,3 +16,16 @@
     flex-direction: column;
     
 }
+.circle-image{
+border-radius: 50%;
+}
+.circle-image{
+    border-radius: 50%;
+    border: 2px;
+    border-color: black;
+    background: bisque;
+}
+.reactangle-image{
+border-radius: 20%;
+background: violet;
+}

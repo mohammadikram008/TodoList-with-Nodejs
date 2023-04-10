@@ -7,14 +7,18 @@ const Navbar = () => {
     <Fragment>
       <ul className="nav-item">
         <ul className="d-flex nav-list">
-          <Link to="/home">
+          <Link to="/" className="link-item">
             <li>Home</li>
           </Link>
-          <Link to="imageview">
+          <Link to="/imageview" className="link-item">
             <li>ImageView</li>
           </Link>
-          <li>List</li>
-          <li>ContactUS</li>
+          <Link to="/" className="link-item">
+            <li>List</li>
+          </Link>
+          <Link to="/" className="link-item">
+            <li>ContactUS</li>
+          </Link>
         </ul>
         <li className="name">MI</li>
       </ul>

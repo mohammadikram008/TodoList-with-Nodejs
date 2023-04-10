@@ -9,7 +9,7 @@
     /* align-items: center; */
   }
   .nav-list {
-    width: 50%;
+    width: 30%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -24,6 +24,9 @@
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    background-color: aqua;
+    background-color: rgb(163, 194, 194);
   }
- 
+ .link-item{
+color: black;
+text-decoration: none;
+ }

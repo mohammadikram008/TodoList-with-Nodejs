@@ -14,15 +14,15 @@ const Sidebar = () => {
           </li>
 
           <li className="nav-item-sidebar mb-2 ">
-            <Link className="nav-link" to="/home">
+            <Link className="nav-link" to="/">
               <i className="fas fa-user font-weight-bold"></i>{" "}
-              <span className="ml-3">Overview</span>
+              <span className="ml-3">OverView</span>
             </Link>
           </li>
           <li className="nav-item-sidebar ">
             <a
               className="nav-link"
-              href="#report"
+              href="/imageview"
               data-toggle="collapse"
               data-target="#submenu1"
             >
@@ -30,24 +30,48 @@ const Sidebar = () => {
                 className="far fa-file-word 
                     font-weight-bold"
               ></i>{" "}
-              <span className="ml-3"> Reports</span>
+              <span className="ml-3"> ImageView</span>
             </a>
-            <ul
+            <a
+              className="nav-link"
+              href="/imageview"
+              data-toggle="collapse"
+              data-target="#submenu1"
+            >
+              <i
+                className="far fa-file
+                    font-weight-bold"
+              ></i>{" "}
+              <span className="ml-3"> List</span>
+            </a>
+            <a
+              className="nav-link"
+              href="/imageview"
+              data-toggle="collapse"
+              data-target="#submenu1"
+            >
+              <i
+                className="fas fa-book-reader
+                    font-weight-bold"
+              ></i>{" "}
+              <span className="ml-3">ContactUs</span>
+            </a>
+            {/* <ul
               className="list-unstyled flex-column pl-3 collapse"
               id="submenu1"
               aria-expanded="false"
             >
               <li className="nav-item-sidebar ">
                 <a className="nav-link" href="">
-                  <i className="fas fa-book-reader"></i> Data Report{" "}
+                  <i className="fas fa-book-reader"></i> List{" "}
                 </a>
               </li>
               <li className="nav-item-sidebar  ">
                 <a className="nav-link" href="">
-                  <i className="fas fa-book-medical"></i> File Report{" "}
+                  <i className="fas fa-book-medical"></i> ContactUs{" "}
                 </a>
               </li>
-            </ul>
+            </ul> */}
             <hr />
           </li>
           <li className="nav-item-sidebar ">

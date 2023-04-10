@@ -13,6 +13,8 @@
     "bootstrap": "^5.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-media": "^1.10.0",
+    "react-paginate": "^8.1.5",
     "react-perfect-scrollbar": "^1.5.8",
     "react-router-dom": "^6.10.0",
     "react-scripts": "5.0.1",

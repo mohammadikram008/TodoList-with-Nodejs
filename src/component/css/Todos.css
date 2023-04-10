@@ -4,7 +4,9 @@
     /* justify-content: center; */
     /* align-items: center; */
   }
-  
+  .searchbtn{
+    margin-left: 3%;
+   }
   /* #posts {
     width: 400px;
   }
@@ -56,3 +58,7 @@
  }
  
    */
+   .del{
+margin-left: 10%;
+   }
+ 
