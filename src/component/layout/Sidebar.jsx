@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
-import "../component/css/Sidebar.css";
+import "../css/Sidebar.css";
 const Sidebar = () => {
   return (
     <Fragment>

@@ -2,17 +2,17 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import { Col, Input, Label, Row, Table } from "reactstrap";
 import Paper from "@mui/material/Paper";
-import Snackbar from "../component/snackbar";
+import Snackbar from "../snackbar";
 import TextField from "@mui/material/TextField";
 import ReactPaginate from "react-paginate";
-
+//calling api
 import {
   addTask,
   getTasks,
   updateTask,
   deleteTask,
-} from "../services/TaskServices";
-import "./css/Todos.css";
+} from "../../services/TaskServices";
+import "../css/Todos.css";
 import SkeletonComponent from "./SkeletonComponent";
 // class TodoListForm extends Tasks {
 //   state = { tasks: [], currentTask: "" };
@@ -102,16 +102,31 @@ const TodoListForm = () => {
   //getAlldata
   async function getdata() {
     const data = await getTasks();
-    setTasks(data.data);
+    console.log("data", data);
+    // let sortedCars1 = data.data.sort(
+    //   (a, b) =>
+    //     new Date(...a.duedate.split("/").reverse()) -
+    //     new Date(...b.duedate.split("/").reverse())
+    // );
+    const res = data.data
+      .slice(0)
+      .sort(
+        (a, b) =>
+          a.duedate.localeCompare(b.duedate) ||
+          a.duetime.localeCompare(b.duetime)
+      );
+    console.log("DueDate", res);
+    setTasks(res);
   }
   useEffect(() => {
     try {
-      const data = getdata();
+      getdata();
+      // console.log("data", data);
     } catch (error) {
       console.log(error);
     }
   }, []);
-  console.log("TASk", tasks);
+  // console.log("TASk", tasks);
 
   //submit Data to database
   const handleSubmit = async (e) => {
@@ -121,6 +136,7 @@ const TodoListForm = () => {
         if (id) {
           handleDelete(id);
           const { data } = await addTask({
+            _id: id,
             name: name,
             assignee: assigne,
             date: date,
@@ -128,18 +144,24 @@ const TodoListForm = () => {
             duedate: Duedate,
             duetime: Duetime,
           });
-          const tasks = originalTasks;
-          tasks.push(data);
-          setName("");
-          setTasks("");
-          setAssigne("");
-          setDate("");
-          setTime("");
-          setDueDate("");
-          setDueTime("");
-          setId("");
-          setOpen(true);
-          setMessage({ text: "Updated successfully ", type: "success" });
+
+          if (data) {
+            const tasks = originalTasks;
+            tasks.push(data);
+            setName("");
+            setTasks("");
+            setAssigne("");
+            setDate("");
+            setTime("");
+            setDueDate("");
+            setDueTime("");
+            setId("");
+            setOpen(true);
+            setMessage({ text: "Updated successfully ", type: "success" });
+          } else {
+            setOpen(true);
+            setMessage({ text: "Error", type: "danger" });
+          }
         } else {
           const { data } = await addTask({
             name: name,
@@ -149,18 +171,23 @@ const TodoListForm = () => {
             duedate: Duedate,
             duetime: Duetime,
           });
-          //   console.log;
-          const tasks = originalTasks;
-          tasks.push(data);
-          setName("");
-          setTasks("");
-          setAssigne("");
-          setDate("");
-          setTime("");
-          setDueDate("");
-          setDueTime("");
-          setOpen(true);
-          setMessage({ text: "Save successfully ", type: "success" });
+          if (data) {
+            const tasks = originalTasks;
+            tasks.push(data);
+            setName("");
+            setTasks("");
+            setAssigne("");
+            setDate("");
+            setTime("");
+            setDueDate("");
+            setDueTime("");
+            setOpen(true);
+            setOpen(true);
+            setMessage({ text: "Save successfully ", type: "success" });
+          } else {
+            setOpen(true);
+            setMessage({ text: "Error", type: "danger" });
+          }
         }
       } catch (error) {
         console.log(error);
@@ -181,7 +208,7 @@ const TodoListForm = () => {
         setDate(tasks[index].date);
         setTime(tasks[index].time);
         setDueDate(tasks[index].duedate);
-        setDueTime(tasks[index].dueTime);
+        setDueTime(tasks[index].duetime);
         setId(tasks[index]._id);
         // tasks[index].completed = !tasks[index].completed;
         setTasks(tasks);
@@ -228,7 +255,7 @@ const TodoListForm = () => {
     handleSearchByName = async (e) => {
       let key = searchValue;
       setSearchAssigne("");
-      //   setSearchValue(key);
+
       if (key) {
         let result = await fetch(
           `http://localhost:8080/api/tasks/search/${key}`
@@ -237,7 +264,6 @@ const TodoListForm = () => {
         console.log("result:", result);
         if (result) {
           setTasks(result);
-          //   setSearchValue(key);
         }
       } else {
         setSearchValue("");
@@ -246,10 +272,8 @@ const TodoListForm = () => {
     },
     ///SearchByAssinge
     handleSearchByAssignee = async (e) => {
-      //   let key = e.target.value;
       let key = searchAssignee;
       setSearchValue("");
-      //   setSearchAssigne(key);
       if (key) {
         let result = await fetch(
           `http://localhost:8080/api/tasks/search/${key}`
@@ -263,7 +287,9 @@ const TodoListForm = () => {
         setSearchAssigne("");
         getdata();
       }
-    };
+    },
+    handleSortbyduedate = () => {};
+
   return (
     <Fragment>
       <Row className="m-0">

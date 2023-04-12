@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from "react";
-import "./css/image.css";
+import "../css/image.css";
+
 import {
   Card,
   CardBody,

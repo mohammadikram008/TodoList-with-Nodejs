@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
-import "../component/css/Navbar.css";
+import "../css/Navbar.css";
 
 const Navbar = () => {
   return (

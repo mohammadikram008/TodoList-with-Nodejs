@@ -1,13 +1,13 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Button, Card, CardBody, CardTitle, Input } from "reactstrap";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import "../component/css/Todos.css";
+import "../css/Todos.css";
 import {
   addTask,
   getTasks,
   updateTask,
   deleteTask,
-} from "../services/TaskServices";
+} from "../../services/TaskServices";
 const Todolist = () => {
   const [data, setData] = useState(""),
     [searchValue, setSearchValue] = useState(""),

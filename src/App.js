@@ -1,13 +1,7 @@
 import "./App.css";
-import Tasks from "./Task";
-
-import { Checkbox, Button } from "@mui/material";
-import Paper from "@mui/material/Paper";
-import TextField from "@mui/material/TextField";
-import MainPage from "./component/MainPage";
+import MainPage from "./component/layout/MainPage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import TodoListForm from "./component/TodoListForm";
-import ImageView from "./component/ImageView";
+import ImageView from "./component/layout/ImageView";
 function App() {
   return (
     <div className="App">
